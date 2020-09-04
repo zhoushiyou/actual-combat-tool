@@ -18,7 +18,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
  * @Date 2020/8/27
  * @Version V1.0
  **/
-@Configuration
+@Configuration  //声明当前是一个配置类
 @EnableSwagger2
 public class MrSwagger2Config {
 

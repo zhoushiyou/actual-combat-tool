@@ -12,7 +12,7 @@ import org.springframework.cloud.netflix.eureka.server.EnableEurekaServer;
  * @Version V1.0
  **/
 @SpringBootApplication
-@EnableEurekaServer
+@EnableEurekaServer  //声明当前是一个服务中心
 public class ShopBasicEurekaServer {
 
     public static void main(String[] args) {

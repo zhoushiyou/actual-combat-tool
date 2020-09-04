@@ -15,6 +15,8 @@
     <packaging>pom</packaging>
     <modules>
         <module>baidu-shop-basic-eureka-server</module>
+        <module>baidu-shop-basic-zuul-server</module>
+        <module>baidu-shop-basic-upload-server</module>
     </modules>
 
 </project>

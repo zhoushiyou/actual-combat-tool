@@ -14,7 +14,7 @@ import tk.mybatis.spring.annotation.MapperScan;
  **/
 @SpringBootApplication
 @EnableEurekaClient
-@MapperScan(value = "com.baidu.shop.mapper")
+@MapperScan(value = "com.baidu.shop.mapper")  //扫描业务接口包
 public class ShopServiceXXXRun {
 
     public static void main(String[] args) {

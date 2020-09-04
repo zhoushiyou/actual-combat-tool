@@ -12,7 +12,7 @@ import org.omg.CORBA.INTERNAL;
  * @Version V1.0
  **/
 @Data
-@NoArgsConstructor
+@NoArgsConstructor  //为类提供一个无参的构造方法
 public class Result<T> {
 
     private Integer code;//返回码
