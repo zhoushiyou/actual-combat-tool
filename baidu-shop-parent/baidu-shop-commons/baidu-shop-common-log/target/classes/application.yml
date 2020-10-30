@@ -1,0 +1,6 @@
+#logging:
+#  config: classpath:/logback/
+#  level:
+#    com.muses.taoshop: debug
+#  file:
+#    path: D:/log/
