@@ -9,10 +9,16 @@
     </option>
     <option name="ignoredFiles">
       <set>
+        <option value="$PROJECT_DIR$/baidu-shop-basics/baidu-shop-basic-eureka-client/pom.xml" />
+        <option value="$PROJECT_DIR$/baidu-shop-basics/baidu-shop-basic-eureka-feign/pom.xml" />
+        <option value="$PROJECT_DIR$/baidu-shop-basics/baidu-shop-basic-ogs/pom.xml" />
+        <option value="$PROJECT_DIR$/baidu-shop-basics/untitled/pom.xml" />
         <option value="$PROJECT_DIR$/baidu-shop-commoms/pom.xml" />
         <option value="$PROJECT_DIR$/baidu-shop-service-api-xxx/pom.xml" />
         <option value="$PROJECT_DIR$/baidu-shop-service-api-xxxx/pom.xml" />
         <option value="$PROJECT_DIR$/baidu-shop-service-api/baidu-shop-service-api-xxx/pom.xml" />
+        <option value="$PROJECT_DIR$/baidu-shop-service/baidu-shop-mongodb-comment/pom.xml" />
+        <option value="$PROJECT_DIR$/mingrui-shop-service-api-search/pom.xml" />
       </set>
     </option>
   </component>
