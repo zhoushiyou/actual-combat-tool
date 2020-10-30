@@ -6,9 +6,12 @@ import com.baidu.shop.base.Result;
 import com.baidu.shop.entity.CategoryBrandEntity;
 import com.baidu.shop.entity.CategoryEntity;
 import com.baidu.shop.entity.SpecGroupEntity;
+import com.baidu.shop.entity.SpuEntity;
+import com.baidu.shop.exception.MrException;
 import com.baidu.shop.mapper.CategoryBrandMapper;
 import com.baidu.shop.mapper.CategoryMapper;
 import com.baidu.shop.mapper.SpecGroupMapper;
+import com.baidu.shop.mapper.SpuMapper;
 import com.baidu.shop.service.CategoryService;
 import com.baidu.shop.utils.ObjectUtil;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,7 +19,9 @@ import org.springframework.web.bind.annotation.RestController;
 import tk.mybatis.mapper.entity.Example;
 
 import javax.annotation.Resource;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @ClassName CategoryServiceImpl
@@ -37,6 +42,9 @@ public class CategoryServiceImpl extends BaseApiService implements CategoryServi
     @Resource
     private CategoryBrandMapper categoryBrandMapper;
 
+    @Resource
+    private SpuMapper spuMapper;
+
     @Override
     public Result<List<CategoryEntity>> getCategoryByPid(Integer pid) {
         CategoryEntity categoryEntity = new CategoryEntity();
@@ -52,11 +60,11 @@ public class CategoryServiceImpl extends BaseApiService implements CategoryServi
 
         //强制修改id,可以减少一次查询和判断
         //这个更新操作是必须要执行的，可以提高效率
-            CategoryEntity categoryEntity1 = new CategoryEntity();
-            //通过前台传输的parentId与数据库查询的当前节点id对比校验
-            categoryEntity1.setId(categoryEntity.getParentId());
-            categoryEntity1.setIsParent(1);
-            categoryMapper.updateByPrimaryKeySelective(categoryEntity1);
+        CategoryEntity categoryEntity1 = new CategoryEntity();
+        //通过前台传输的parentId与数据库查询的当前节点id对比校验
+        categoryEntity1.setId(categoryEntity.getParentId());
+        categoryEntity1.setIsParent(1);
+        categoryMapper.updateByPrimaryKeySelective(categoryEntity1);
 
         categoryMapper.insertSelective(categoryEntity);
         return this.setResultSuccess();
@@ -89,17 +97,8 @@ public class CategoryServiceImpl extends BaseApiService implements CategoryServi
         example.createCriteria().andEqualTo("parentId",entity.getParentId());
         List<CategoryEntity> list = categoryMapper.selectByExample(example);
 
-        //若分类商品与品牌绑定关系的话，则不可删除
-        Example example1 = new Example(CategoryBrandEntity.class);
-        example1.createCriteria().andEqualTo("categoryId",id);
-        List<CategoryBrandEntity> categoryBrandEntities = categoryBrandMapper.selectByExample(example1);
-        if (!categoryBrandEntities.isEmpty()) return this.setResultError("当前分类已与品牌绑定关系，不可删！");
-
-        //若分类商品与规格组绑定关系，则不可删
-        Example example2 = new Example(SpecGroupEntity.class);
-        example2.createCriteria().andEqualTo("cid",id);
-        List<SpecGroupEntity> categoryGroup = specGroupMapper.selectByExample(example2);
-        if(ObjectUtil.isNotNull(categoryGroup)) return this.setResultError("当前分类与规格组绑定关系，不可删除");
+        //调用封装的方法
+        this.deleteCategoryAndGroupAndBrandAndGoods(id);
 
         //如果查询出来的数据只有要删除的这一条
         //那么就把当前父级节点的状态改为0
@@ -114,11 +113,48 @@ public class CategoryServiceImpl extends BaseApiService implements CategoryServi
         return this.setResultSuccess();
     }
 
+    //封装分类与规格组、品牌、商品的删除
+    private void deleteCategoryAndGroupAndBrandAndGoods(Integer id){
+        //若分类商品与品牌绑定关系的话，则不可删除
+        Example example1 = new Example(CategoryBrandEntity.class);
+        example1.createCriteria().andEqualTo("categoryId",id);
+        List<CategoryBrandEntity> categoryBrandEntities = categoryBrandMapper.selectByExample(example1);
+        if (!categoryBrandEntities.isEmpty()) throw new MrException(601,"当前分类已与品牌绑定关系，不可删！");
+
+        //若分类商品与规格组绑定关系，则不可删
+        Example example2 = new Example(SpecGroupEntity.class);
+        example2.createCriteria().andEqualTo("cid",id);
+        List<SpecGroupEntity> categoryGroup = specGroupMapper.selectByExample(example2);
+        if(ObjectUtil.isNotNull(categoryGroup)) throw new MrException(602,"当前分类与规格组绑定关系，不可删除");
+
+        //若分类已在商品中展示的话 -->不可删  可以不进行判断，因为它已与品牌、规格绑定关系
+//        Example example = new Example(SpuEntity.class);
+//        example.createCriteria().andEqualTo("cid3",id);
+//        List<SpuEntity> list = spuMapper.selectByExample(example);
+//        if(list.size() > 0){
+//            throw new MrException(603,"分类已在商品中展示,不可删！！！！！");
+//        }
+
+    }
+
     @Override
     public Result<List<CategoryEntity>> getCategoryByBrandId(Integer brandId) {
         //这里调用的方法需要手写在CategoryMapper中
         List<CategoryEntity> brand= categoryMapper.getCategoryByBrandId(brandId);
         return this.setResultSuccess(brand);
+    }
+
+    //通过cid3查询分类信息
+    @Override
+    public Result<List<CategoryEntity>> getCategoryByIdList(String cidsStr) {
+        List<Integer> cidList = Arrays.asList(cidsStr.split(","))
+                .stream()
+                .map(cidStr -> Integer.parseInt(cidStr))
+                .collect(Collectors.toList());
+
+        List<CategoryEntity> list = categoryMapper.selectByIdList(cidList);
+
+        return this.setResultSuccess(list);
     }
 
 }

@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en"  xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+
+    <!-- 循环 -->
+    <div th:each=" stu: ${stuList} ">
+        <span> 姓名----密码----年龄----颜色</span><br>
+        <span th:text="${stu.code}"></span>----
+        <span th:text="${stu.pass}"></span>----
+        <span th:text="${stu.age}"></span>----
+        <span th:text="${stu.color}"></span>
+    </div>
+    <p>
+
+    <!-- 获取对象的状态 -->
+    <div th:each=" stu,stat: ${stuList} ">
+        <span> 下标--总个数--姓名----密码----年龄状态----颜色----姓名含义</span><br>
+        <span th:text="${stat.index}"></span>----
+        <span th:text="${stat.size}"></span>----
+        <span th:text="${stu.code}"></span>----
+        <span th:text="${stu.pass}"></span>----
+        <span th:if="${stu.age >=20}">青年</span>
+        <span th:unless="${stu.age >= 20}">青少年</span>----
+        <span th:text="${stu.color}"></span>----
+        <span th:switch="${stu.code}">----
+            <span th:case="${'01'}">一世陪伴</span>
+            <span th:case="${'02'}">三生有幸</span>
+            <span th:case="${'03'}">一日三餐</span>
+            <span th:case="${'04'}">四季相守</span>
+        </span>
+    </div>
+
+</body>
+</html>

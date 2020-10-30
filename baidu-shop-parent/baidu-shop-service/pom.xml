@@ -15,6 +15,12 @@
     <packaging>pom</packaging>
     <modules>
         <module>baidu-shop-service-xxx</module>
+        <module>mingrui-shop-service-search</module>
+        <module>baidu-shop-service-template</module>
+        <module>baidu-shop-service-user</module>
+        <module>baidu-shop-service-car</module>
+        <module>baidu-shop-service-order</module>
+        <module>baidu-shop-service-pay</module>
     </modules>
 
     <dependencies>
@@ -55,6 +61,12 @@
             <groupId>com.baidu</groupId>
             <artifactId>baidu-shop-service-api-xxxx</artifactId>
             <version>1.0-SNAPSHOT</version>
+        </dependency>
+
+        <!-- rabbitMQ -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-amqp</artifactId>
         </dependency>
 
     </dependencies>
